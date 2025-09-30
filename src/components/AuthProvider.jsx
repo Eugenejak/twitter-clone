@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
 
     const value = { currentUser };
 
-    // When loading is false, do not render children   
+    // When it is not loading, render children   
     return (
         <AuthContext.Provider value={value}>
             {!loading && children}
