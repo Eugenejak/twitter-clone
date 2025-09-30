@@ -1,35 +1,38 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    getAuth,
+} from "firebase/auth";
+import { useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import useLocalStorage from "use-local-storage";
+import { AuthContext } from "../components/AuthProvider"
 
 
 export default function AuthPage() {
     const loginImage = "https://sig1.co/img-twitter-1"
-    const url = "https://795819bf-adba-49bd-8c58-dc0da7d88af7-00-sbxw90wa6avl.pike.replit.dev:3000";
 
     // Possible values: null (no modal shows), "Login", "SignUp"
     const [modalShow, setModalShow] = useState(null);
-    const handleShowSignUp = () => setModalShow("SignUp");
-    const handleShowLogin = () => setModalShow("Login");
+    const handleShowSignUp = () => setModalShow("signup");
+    const handleShowLogin = () => setModalShow("login");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [authToken, setAuthToken] = useLocalStorage("authToken", "");
 
     const navigate = useNavigate();
+    const auth = getAuth();
+    const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
-        if (authToken) {
-            navigate("/profile");
-        }
-    }, [authToken, navigate]);
+        if (currentUser) navigate("/profile");
+
+    }, [currentUser, navigate]);
 
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${url}/signup`, { username, password });
-            console.log(res.data);
+            const res = await createUserWithEmailAndPassword(auth, username, password);
+            console.log(res.user);
         } catch (error) {
             console.error(error);
         }
@@ -38,11 +41,10 @@ export default function AuthPage() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${url}/login`, { username, password });
-            if (res.data && res.data.auth === true && res.data.token) {
-                setAuthToken(res.data.token); // Save token to localStorage
-                console.log("Login was successful, token saved");
-            }
+            await signInWithEmailAndPassword(auth, username, password);
+            //if (res.data && res.data.auth === true && res.data.token) {
+            //   setAuthToken(res.data.token); // Save token to localStorage
+            //   console.log("Login was successful, token saved");
         } catch (error) {
             console.error(error);
         }
