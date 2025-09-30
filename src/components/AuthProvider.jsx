@@ -11,8 +11,8 @@ export function AuthProvider({ children }) {
         return auth.onAuthStateChanged((user) => {
             setCurrentUser(user);
             setLoading(false);
-        })
-    })
+        });
+    }, []);
 
     const value = { currentUser };
 
