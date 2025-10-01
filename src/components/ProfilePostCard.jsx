@@ -55,7 +55,7 @@ export default function ProfilePostCard({ post }) {
                     </Button>
                     <Button variant="light" onClick={handleLike}>
                         {isLiked ? (
-                            <i className="bi bi-heart-fill text-danger"> {likes}</i>
+                            <i className="bi bi-heart-fill text-danger"></i>
                         ) : (
                             <i className="bi bi-heart"></i>
                         )}
